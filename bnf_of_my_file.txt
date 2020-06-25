@@ -1,0 +1,239 @@
+<program>::=
+    //empty
+    |<statements>
+
+<statements>
+    ::= <statements> statement 
+    | <statement>           
+    
+
+<statement>
+::=
+    <expr_list>              
+    |<if_stmt>                
+    |<print_stm>
+    | <for_stmt>              
+    | <import_stmt>      
+    | <classdef> 
+    | <function_stmt>    
+    | <call>
+    |<assign_stm>
+    |<lambda>
+    
+
+
+
+<print_stm>::=
+     PRINT <expr_list>          
+    |PRINT TOK_L_P <string> TOK_R_P         
+    |PRINT  <string>          
+
+
+<assign_stm>::=
+     <target> ASSIGN <expr_list>     
+    | <target> ASSIGN <codeblock> 
+    | <target> ASSIGN <string>  
+    | <target> ASSIGN <lambda>  
+    
+
+
+<call>::=
+    <target> TOK_L_P  TOK_R_P
+
+    | <target> TOK_L_P <expr_list> TOK_R_P
+
+    | <target> ASSIGN <target> TOK_L_P  TOK_R_P
+
+    | <target> ASSIGN <target> TOK_L_P <expr_list> TOK_R_P
+    
+
+	
+
+<function_stmt>::=
+    DEF <function_name> TOK_L_P <parameter_list> TOK_R_P THEN <codeblock>
+    |DEF <function_name> TOK_L_P  TOK_R_P THEN <codeblock>
+    
+
+<parameter_list>::=
+
+    |<parameter_list> COMMA parameter
+    |<parameter>
+    |<term>
+
+<parameter>::=
+    VAR
+    | <parameter> DOT VAR
+
+<function_name>::=
+    VAR
+    |INIT
+
+<classdef>::=
+	CLASS <classname> THEN <codeblock>
+		
+		
+<classname>::=
+	VAR
+    
+
+
+<import_stmt>::= 
+
+	IMPORT <module>
+	| IMPORT <module> AS <name>
+	| IMPORT <modules> <modules>
+	| IMPORT <modules> AS <name> <modules>
+	| FROM <relative_module> IMPORT VAR
+	| FROM <relative_module> IMPORT VAR AS <name>
+
+<module>::= 
+	<module> DOT <name> 
+	| <name>
+
+<relative_module>::=
+	 <module> 
+	| <dots> <module>
+	| <dots>
+
+
+<dots>::= DOT
+	| <dots> DOT
+
+<modules>::=
+     <modules> COMMA  <module>
+	| <modules> COMMA  <module> AS <name>
+	| COMMA <module>
+	| COMMA <module> AS <name>
+
+
+<name>::= 
+    VAR 
+
+//-------------------------------------------------------------------------------------------------------------
+<if_stmt>::=
+     IF <cond> THEN <codeblock>                
+     | IF <cond> THEN <codeblock> <elif_stmt>    
+     | IF <cond> THEN <codeblock> <elif_stmt> ELSE THEN <codeblock>    
+    
+
+<elif_stmt>::=
+    ELIF <cond> THEN <codeblock>   
+    |elif_stmt> ELIF <cond> THEN <codeblock> 
+//-------------------------------------------------------------------------------------------------------------
+<for_stmt>::=
+	FOR for_<target_list> IN <expr_list> THEN <codeblock> 
+	|FOR <for_target_list>> IN RANGE TOK_L_P <expr_list> TOK_R_P  THEN <codeblock>
+   
+
+<for_target_list>::=
+	<for_target>
+	| <for_target_list> COMMA <for_target>
+	| <for_target_list> COMMA
+
+<for_target>::=
+	VAR
+	|TOK_L_P <for_target_list> TOK_R_P
+
+//-------------------------------------------------------------------------------------------------------------
+<dict_display>::=
+	TOK_L_BRA TOK_R_BRA
+	| TOK_L_BRA <key_datum_list> TOK_R_BRA
+		
+<key_datum_list>::=
+	<key_datum >
+	| <key_datum > COMMA
+	| <key_datum > <key_datums>
+	| <key_datum > <key_datums> COMMA
+
+<key_datums>::=
+	COMMA <key_datum>
+	| <key_datums> COMMA key_datum
+		
+<key_datum>::=
+		expr_<string> THEN <expr_string>
+
+<expr_string>::=
+    <expr>
+    |<string>
+
+<lambda>::=
+	<LAMBDA> THEN <expr>
+	| <LAMBDA> <lam_parameters> THEN <expr>
+	
+
+
+<lam_parameters>::=
+	|VAR
+	|<relative_var>
+	|<lam_parameters> COMMA VAR
+	|<lam_parameters> COMMA <relative_var>
+
+
+
+<codeblock>
+    ::= <indent> <statements> <dedent> 
+    
+
+<expr_list>::=  
+    <expr_list> COMMA <expr>    
+    |<expr >                   
+    
+
+<expr >
+    ::= <term>                  
+    | <expr >TOK_PLUS <term>    
+    | <expr >TOK_MINUS <term>   
+    
+
+<term>
+    ::= <factor>                
+    | <term> TOK_MUL <factor>  
+    | <term> TOK_DIV <factor>   
+    
+
+<factor>
+    ::= INTNUM                
+    | TOK_L_P <expr >TOK_R_P  
+    | TRUE                  
+    | FALSE                
+    | VAR                  
+    | <relative_var>
+    |<dict_display>
+    
+
+
+
+<cond>
+    ::= <expr >TOK_EQ <expr >       
+    | <expr >TOK_NE <expr >      
+    | <expr >TOK_GE <expr >       
+    | <expr >TOK_LE <expr >       
+    | <expr >TOK_GT <expr >       
+    | <expr >TOK_LT <expr >      
+    | <expr >                   
+    |  TOK_L_P <cond> TOK_R_P   
+    
+
+
+<target>::=
+	VAR                
+	|<target> DOT VAR    
+
+
+<relative_var>::=
+    VAR
+    |<relative_var> DOT VAR
+
+<string>::=
+    STRING 
+
+
+
+
+
+<indent>::=
+    TOK_INDENT
+
+<dedent>
+    ::= TOK_DEDENT
+    
