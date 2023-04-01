@@ -12,7 +12,6 @@ To use the Python compiler, follow these steps:
     
 3.  Run the following command to generate the lex and parser files:
     
-    css
     
 
 -   `flex flex.l bison -d parser.y`
@@ -23,7 +22,7 @@ To use the Python compiler, follow these steps:
     
 -   Run the following command to test the compiler:
     
-    bash
+    
     
 
 1.  `./compiler < example.py`
